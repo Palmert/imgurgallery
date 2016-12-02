@@ -22,6 +22,10 @@ public class ImgurRecyclerView extends RecyclerView {
     private ImgurAdapter imgurAdapter;
     private LinearLayoutManager layoutManager;
 
+    public void addImgurItems(List<ImgurItem> imgurItems) {
+        imgurAdapter.addImgurItems(imgurItems);
+    }
+
     public interface ScrollListener {
         void requestMoreItems();
     }

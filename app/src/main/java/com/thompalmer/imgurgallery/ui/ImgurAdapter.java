@@ -38,4 +38,9 @@ class ImgurAdapter extends RecyclerView.Adapter<ImgurItemViewHolder> {
         this.imgurItems = imgurItems;
         notifyDataSetChanged();
     }
+
+    void addImgurItems(List<ImgurItem> imgurItems) {
+        this.imgurItems.addAll(imgurItems);
+        notifyItemRangeInserted(this.imgurItems.size() - imgurItems.size(), this.imgurItems.size());
+    }
 }

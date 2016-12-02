@@ -5,6 +5,7 @@ import com.thompalmer.imgurgallery.domain.GetGalleryImgurItems;
 
 import java.util.List;
 
+import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
@@ -22,29 +23,34 @@ class GalleryPresenter {
     GalleryPresenter(GalleryView view) {
         this.view = view;
         getGalleryImgurItems = new GetGalleryImgurItems();
-        getImgurItems(galleryType);
+        onGalleryTypeChanged(galleryType);
     }
 
     void onGalleryTypeChanged(String galleryType) {
         currentPage = 0;
         this.galleryType = galleryType;
-        getImgurItems(galleryType);
+        getImgurItems(galleryType).subscribe(new Consumer<List<ImgurItem>>() {
+            @Override
+            public void accept(List<ImgurItem> imgurItems) throws Exception {
+                view.setImgurItems(imgurItems);
+            }
+        });
     }
 
     void requestMoreItems() {
         currentPage++;
-        getImgurItems(galleryType);
+        getImgurItems(galleryType).subscribe(new Consumer<List<ImgurItem>>() {
+            @Override
+            public void accept(List<ImgurItem> imgurItems) throws Exception {
+                view.addImgurItems(imgurItems);
+            }
+        });
     }
 
-    private void getImgurItems(String galleryType) {
-        getGalleryImgurItems.execute(galleryType, currentPage)
+    private Observable<List<ImgurItem>> getImgurItems(String galleryType) {
+        return getGalleryImgurItems.execute(galleryType, currentPage)
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<List<ImgurItem>>() {
-                    @Override
-                    public void accept(List<ImgurItem> imgurItems) throws Exception {
-                        view.setImgurItems(imgurItems);
-                    }
-                });
+                .observeOn(AndroidSchedulers.mainThread());
+
     }
 }

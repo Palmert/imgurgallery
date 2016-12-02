@@ -82,4 +82,8 @@ public class GalleryView extends DrawerLayout implements NavigationView.OnNaviga
             }
         });
     }
+
+    public void addImgurItems(List<ImgurItem> imgurItems) {
+        imgurRecyclerView.addImgurItems(imgurItems);
+    }
 }
